@@ -5,7 +5,7 @@ const footerLinks = [
   { href: "/", label: "О проекте" },
   { href: "/ponds", label: "Каталог" },
   { href: "/for-owners", label: "Для владельцев" },
-  { href: "mailto:hello@example.ru", label: "Контакты" }
+  { href: "mailto:ivan@blshv.ru", label: "Контакты" }
 ];
 
 export function Footer() {
