@@ -2,25 +2,8 @@ import { HelpCircle } from "lucide-react";
 import { faqItems } from "@/data/faq";
 
 export function FaqSection() {
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqItems.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer
-      }
-    }))
-  };
-
   return (
     <section className="section-y bg-sand-50">
-      <script
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-        type="application/ld+json"
-      />
       <div className="container-page">
         <div className="mb-8 max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-pine-700">

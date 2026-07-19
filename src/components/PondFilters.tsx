@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import type { Pond } from "@/data/ponds";
-import { fishOptions } from "@/data/ponds";
+import { fishOptions, sortPondsRecommended } from "@/data/ponds";
 import { Button } from "./ui/button";
 import { Select } from "./ui/select";
 import { PondCard } from "./PondCard";
 import { EmptyState } from "./EmptyState";
 
-type SortValue = "distance" | "price" | "stocking";
+type SortValue = "recommended" | "distance" | "price" | "stocking";
 
 type PondFiltersProps = {
   ponds: Pond[];
@@ -26,7 +26,7 @@ export function PondFilters({ ponds }: PondFiltersProps) {
   const [fish, setFish] = useState("any");
   const [distance, setDistance] = useState("any");
   const [price, setPrice] = useState("any");
-  const [sort, setSort] = useState<SortValue>("distance");
+  const [sort, setSort] = useState<SortValue>("recommended");
   const [features, setFeatures] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export function PondFilters({ ponds }: PondFiltersProps) {
     const maxDistance = distance === "any" ? Infinity : Number(distance);
     const maxPrice = price === "any" ? Infinity : Number(price);
 
-    return ponds
+    const matchingPonds = ponds
       .filter((pond) => (fish === "any" ? true : pond.fish.includes(fish)))
       .filter((pond) => pond.distanceFromMkad <= maxDistance)
       .filter((pond) => pond.priceFrom <= maxPrice)
@@ -54,8 +54,13 @@ export function PondFilters({ ponds }: PondFiltersProps) {
         serviceFilters.every((filter) =>
           features[filter.key] ? pond.features[filter.key] : true
         )
-      )
-      .sort((a, b) => {
+      );
+
+    if (sort === "recommended") {
+      return sortPondsRecommended(matchingPonds);
+    }
+
+    return [...matchingPonds].sort((a, b) => {
         if (sort === "price") {
           return a.priceFrom - b.priceFrom;
         }
@@ -75,7 +80,7 @@ export function PondFilters({ ponds }: PondFiltersProps) {
     setFish("any");
     setDistance("any");
     setPrice("any");
-    setSort("distance");
+    setSort("recommended");
     setFeatures({});
   }
 
@@ -158,6 +163,7 @@ export function PondFilters({ ponds }: PondFiltersProps) {
           <label className="grid gap-2 border-t border-pine-900/10 pt-4 text-sm font-semibold text-pine-900">
             Сортировка
             <Select value={sort} onChange={(event) => setSort(event.target.value as SortValue)}>
+              <option value="recommended">рекомендуемые</option>
               <option value="distance">по расстоянию</option>
               <option value="price">по цене</option>
               <option value="stocking">по последнему зарыблению</option>

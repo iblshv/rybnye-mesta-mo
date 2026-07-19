@@ -1,28 +1,41 @@
 import type { MetadataRoute } from "next";
-import { fishSeoPages, featureSeoPages } from "@/data/seo-pages";
-import { ponds } from "@/data/ponds";
-import { absoluteUrl } from "@/lib/site";
+import { distanceSeoPages, fishSeoPages, featureSeoPages } from "@/data/seo-pages";
+import { getPublishedPonds } from "@/data/ponds";
+import { CONTENT_LAST_MODIFIED } from "@/lib/seo";
+import { canonicalUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const ponds = getPublishedPonds();
   const staticRoutes = ["", "/ponds", "/for-owners"].map((route) => ({
-    url: absoluteUrl(route),
-    lastModified: new Date()
+    url: canonicalUrl(route),
+    lastModified: new Date(CONTENT_LAST_MODIFIED)
   }));
 
   const pondRoutes = ponds.map((pond) => ({
-    url: absoluteUrl(`/ponds/${pond.slug}`),
-    lastModified: pond.lastStocking ? new Date(pond.lastStocking.date) : new Date()
+    url: canonicalUrl(`/ponds/${pond.slug}`),
+    lastModified: new Date(CONTENT_LAST_MODIFIED)
   }));
 
   const fishRoutes = fishSeoPages.map((page) => ({
-    url: absoluteUrl(`/fish/${page.slug}`),
-    lastModified: new Date()
+    url: canonicalUrl(`/fish/${page.slug}`),
+    lastModified: new Date(CONTENT_LAST_MODIFIED)
   }));
 
   const featureRoutes = featureSeoPages.map((page) => ({
-    url: absoluteUrl(`/features/${page.slug}`),
-    lastModified: new Date()
+    url: canonicalUrl(`/features/${page.slug}`),
+    lastModified: new Date(CONTENT_LAST_MODIFIED)
   }));
 
-  return [...staticRoutes, ...pondRoutes, ...fishRoutes, ...featureRoutes];
+  const distanceRoutes = distanceSeoPages.map((page) => ({
+    url: canonicalUrl(`/distance/${page.slug}`),
+    lastModified: new Date(CONTENT_LAST_MODIFIED)
+  }));
+
+  return [
+    ...staticRoutes,
+    ...pondRoutes,
+    ...fishRoutes,
+    ...featureRoutes,
+    ...distanceRoutes
+  ];
 }

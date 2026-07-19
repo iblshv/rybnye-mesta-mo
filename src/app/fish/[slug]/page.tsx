@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PondCard } from "@/components/PondCard";
+import { StructuredData } from "@/components/StructuredData";
 import { buttonVariants } from "@/components/ui/button";
 import { fishSeoPages, getFishSeoPage } from "@/data/seo-pages";
-import { ponds } from "@/data/ponds";
-import { absoluteUrl } from "@/lib/site";
+import { getPublishedPonds, sortPondsRecommended } from "@/data/ponds";
+import { breadcrumbJsonLd, pondListJsonLd } from "@/lib/seo";
+import { canonicalUrl } from "@/lib/site";
 
 type FishPageProps = {
   params: {
@@ -37,7 +40,7 @@ export function generateMetadata({ params }: FishPageProps): Metadata {
       description: page.description
     },
     alternates: {
-      canonical: absoluteUrl(`/fish/${page.slug}`)
+      canonical: canonicalUrl(`/fish/${page.slug}`)
     }
   };
 }
@@ -49,10 +52,25 @@ export default function FishSeoPage({ params }: FishPageProps) {
     notFound();
   }
 
-  const matchingPonds = ponds.filter((pond) => pond.fish.includes(page.fish));
+  const matchingPonds = sortPondsRecommended(
+    getPublishedPonds().filter((pond) => pond.fish.includes(page.fish))
+  );
+  const breadcrumbs = [
+    { name: "Главная", path: "/" },
+    { name: "Каталог водоёмов", path: "/ponds" },
+    { name: `Рыбалка на ${page.fish}`, path: `/fish/${page.slug}` }
+  ];
 
   return (
-    <section className="section-y">
+    <>
+      <StructuredData
+        data={[
+          breadcrumbJsonLd(breadcrumbs),
+          pondListJsonLd(page.title, `/fish/${page.slug}`, matchingPonds)
+        ]}
+      />
+      <Breadcrumbs items={breadcrumbs} />
+      <section className="section-y pt-8">
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-pine-700">
@@ -78,6 +96,7 @@ export default function FishSeoPage({ params }: FishPageProps) {
           ))}
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }

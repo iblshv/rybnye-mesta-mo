@@ -7,11 +7,13 @@ import { Hero } from "@/components/Hero";
 import { OwnerCTA } from "@/components/OwnerCTA";
 import { PondCard } from "@/components/PondCard";
 import { StockingList } from "@/components/StockingList";
+import { StructuredData } from "@/components/StructuredData";
 import { YandexMap } from "@/components/YandexMap";
 import { buttonVariants } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
-import { fishOptions, getFeaturedPonds, getRecentStockings, ponds } from "@/data/ponds";
-import { absoluteUrl, withBasePath } from "@/lib/site";
+import { fishOptions, getFeaturedPonds, getPublishedPonds, getRecentStockings } from "@/data/ponds";
+import { canonicalUrl, withBasePath } from "@/lib/site";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Рыбные места Московской области - платная рыбалка в Подмосковье",
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
       "Каталог платных водоёмов Московской области: цены, зарыбления, виды рыбы, условия ловли и подбор места для рыбалки."
   },
   alternates: {
-    canonical: absoluteUrl()
+    canonical: canonicalUrl()
   }
 };
 
@@ -31,18 +33,20 @@ const directionLinks = [
   { href: "/fish/forel", label: "Форель", icon: Fish },
   { href: "/fish/karp", label: "Карп", icon: Fish },
   { href: "/fish/osetr", label: "Осётр", icon: Fish },
-  { href: "/ponds?fish=щука", label: "Щука", icon: Fish },
+  { href: "/fish/shchuka", label: "Щука", icon: Fish },
   { href: "/features/gazebos", label: "Рыбалка с беседками", icon: MapPin },
-  { href: "/ponds?feature=tackleRental", label: "Аренда снастей", icon: WalletCards },
-  { href: "/ponds?distance=50", label: "До 50 км от Москвы", icon: MapPin }
+  { href: "/features/tackle-rental", label: "Аренда снастей", icon: WalletCards },
+  { href: "/distance/do-50-km", label: "До 50 км от Москвы", icon: MapPin }
 ];
 
 export default function HomePage() {
   const featuredPonds = getFeaturedPonds();
   const recentStockings = getRecentStockings(6);
+  const publishedPonds = getPublishedPonds();
 
   return (
     <>
+      <StructuredData data={[websiteJsonLd, organizationJsonLd]} />
       <Hero />
 
       <section className="bg-white py-8">
@@ -126,7 +130,7 @@ export default function HomePage() {
             fallbackTitle="Карта всех водоёмов"
             fallbackUrl="https://yandex.ru/maps/?text=платная%20рыбалка%20Московская%20область"
             loadingLabel="Загружаем карту водоёмов..."
-            points={ponds.map((pond) => ({
+            points={publishedPonds.map((pond) => ({
               id: pond.id,
               name: pond.name,
               coordinates: pond.coordinates,

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, Fish, MapPin, WalletCards } from "lucide-react";
-import type { Pond } from "@/data/ponds";
+import { isPriorityPond, type Pond } from "@/data/ponds";
 import { withBasePath } from "@/lib/site";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Badge } from "./Badge";
@@ -14,6 +14,7 @@ type PondCardProps = {
 
 export function PondCard({ pond, compact = false }: PondCardProps) {
   const image = pond.images[0] ?? "/images/placeholders/pond-1.svg";
+  const isPriority = isPriorityPond(pond);
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-pine-900/10 bg-white shadow-soft transition hover:-translate-y-1 hover:shadow-lift">
@@ -30,6 +31,11 @@ export function PondCard({ pond, compact = false }: PondCardProps) {
           <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-pine-900 shadow-sm">
             {pond.distanceFromMkad} км от МКАД
           </div>
+          {isPriority ? (
+            <div className="absolute right-3 top-3 rounded-full bg-sand-100/95 px-3 py-1 text-xs font-bold text-pine-900 shadow-sm">
+              Приоритетное размещение
+            </div>
+          ) : null}
         </div>
       </Link>
 

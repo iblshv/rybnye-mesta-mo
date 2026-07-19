@@ -19,18 +19,21 @@ import {
   Wrench
 } from "lucide-react";
 import { Badge } from "@/components/Badge";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PondCard } from "@/components/PondCard";
+import { StructuredData } from "@/components/StructuredData";
 import { YandexMap } from "@/components/YandexMap";
 import { Card } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import {
   getPondBySlug,
+  getPublishedPonds,
   getRecentStockings,
-  getTicketFormats,
-  ponds
+  getTicketFormats
 } from "@/data/ponds";
 import { formatDate, formatPrice, toPhoneHref } from "@/lib/utils";
-import { absoluteUrl, withBasePath } from "@/lib/site";
+import { breadcrumbJsonLd, pondJsonLd } from "@/lib/seo";
+import { absoluteUrl, canonicalUrl, withBasePath } from "@/lib/site";
 
 type PondPageProps = {
   params: {
@@ -53,7 +56,7 @@ const serviceIconMap: Record<string, React.ComponentType<{ className?: string }>
 };
 
 export function generateStaticParams() {
-  return ponds.map((pond) => ({
+  return getPublishedPonds().map((pond) => ({
     slug: pond.slug
   }));
 }
@@ -81,7 +84,7 @@ export function generateMetadata({ params }: PondPageProps): Metadata {
       images: [absoluteUrl(pond.images[0])]
     },
     alternates: {
-      canonical: absoluteUrl(`/ponds/${pond.slug}`)
+      canonical: canonicalUrl(`/ponds/${pond.slug}`)
     }
   };
 }
@@ -95,9 +98,16 @@ export default function PondPage({ params }: PondPageProps) {
 
   const image = pond.images[0] ?? "/images/placeholders/pond-1.svg";
   const related = getRecentStockings(4).filter((item) => item.id !== pond.id).slice(0, 3);
+  const breadcrumbs = [
+    { name: "Главная", path: "/" },
+    { name: "Каталог водоёмов", path: "/ponds" },
+    { name: pond.name, path: `/ponds/${pond.slug}` }
+  ];
 
   return (
     <>
+      <StructuredData data={[breadcrumbJsonLd(breadcrumbs), pondJsonLd(pond)]} />
+      <Breadcrumbs items={breadcrumbs} />
       <section className="bg-white py-8 md:py-12">
         <div className="container-page grid gap-8 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-pine-50 shadow-soft">
@@ -269,6 +279,10 @@ export default function PondPage({ params }: PondPageProps) {
                       {pond.lastStocking.comment}
                     </p>
                   ) : null}
+                  <p className="text-xs leading-5 text-slate-500 sm:col-span-3">
+                    Исторические данные. Перед поездкой уточните актуальное зарыбление
+                    у администрации водоёма.
+                  </p>
                 </div>
               ) : (
                 <p className="mt-3 text-slate-600">Информация уточняется.</p>

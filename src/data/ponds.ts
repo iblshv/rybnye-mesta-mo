@@ -33,6 +33,10 @@ export type Pond = {
   rules: string[];
   whatToBring: string[];
   images: string[];
+  status: "draft" | "published";
+  placement: "standard" | "priority";
+  position: number | null;
+  clientUntil?: string;
   isFeatured: boolean;
 };
 
@@ -109,6 +113,9 @@ export const ponds: Pond[] = [
       "Непромокаемую одежду и запас обуви."
     ],
     images: ["/images/placeholders/pond-1.svg"],
+    status: "published",
+    placement: "standard",
+    position: null,
     isFeatured: true
   },
   {
@@ -180,6 +187,9 @@ export const ponds: Pond[] = [
       "Бронь беседки при семейной поездке."
     ],
     images: ["/images/placeholders/pond-2.svg"],
+    status: "published",
+    placement: "standard",
+    position: null,
     isFeatured: true
   },
   {
@@ -252,6 +262,9 @@ export const ponds: Pond[] = [
       "Деньги на доплату за рыбу по прайсу."
     ],
     images: ["/images/placeholders/pond-3.svg"],
+    status: "published",
+    placement: "standard",
+    position: null,
     isFeatured: true
   },
   {
@@ -315,6 +328,9 @@ export const ponds: Pond[] = [
       "Контейнер или термосумку для рыбы."
     ],
     images: ["/images/placeholders/pond-4.svg"],
+    status: "published",
+    placement: "standard",
+    position: null,
     isFeatured: true
   },
   {
@@ -388,6 +404,9 @@ export const ponds: Pond[] = [
       "Тёплую одежду для ночной рыбалки и бронь беседки."
     ],
     images: ["/images/placeholders/pond-5.svg"],
+    status: "published",
+    placement: "standard",
+    position: null,
     isFeatured: true
   },
   {
@@ -449,6 +468,9 @@ export const ponds: Pond[] = [
       "Одежду для отдыха у воды."
     ],
     images: ["/images/placeholders/pond-6.svg"],
+    status: "published",
+    placement: "standard",
+    position: null,
     isFeatured: true
   },
   {
@@ -506,6 +528,9 @@ export const ponds: Pond[] = [
       "Тёплую одежду для ночной рыбалки и деньги на залог."
     ],
     images: ["/images/placeholders/pond-1.svg"],
+    status: "published",
+    placement: "standard",
+    position: null,
     isFeatured: false
   },
   {
@@ -564,6 +589,9 @@ export const ponds: Pond[] = [
       "Купальные принадлежности, если планируете SPA."
     ],
     images: ["/images/placeholders/pond-2.svg"],
+    status: "published",
+    placement: "standard",
+    position: null,
     isFeatured: false
   },
   {
@@ -626,6 +654,9 @@ export const ponds: Pond[] = [
       "Бронь проживания при поездке на сутки."
     ],
     images: ["/images/placeholders/pond-3.svg"],
+    status: "published",
+    placement: "standard",
+    position: null,
     isFeatured: false
   },
   {
@@ -677,25 +708,100 @@ export const ponds: Pond[] = [
       "Одежду по погоде; алкоголь не брать."
     ],
     images: ["/images/placeholders/pond-4.svg"],
+    status: "published",
+    placement: "priority",
+    position: 1,
     isFeatured: false
   }
 ];
 
-export const fishOptions = Array.from(new Set(ponds.flatMap((pond) => pond.fish))).sort(
+function isValidDate(value: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false;
+  }
+
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  return (
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  );
+}
+
+export function isPriorityPond(pond: Pond, now = new Date()) {
+  if (
+    pond.placement !== "priority" ||
+    !Number.isInteger(pond.position) ||
+    (pond.position ?? 0) <= 0
+  ) {
+    return false;
+  }
+
+  if (!pond.clientUntil) {
+    return true;
+  }
+
+  if (!isValidDate(pond.clientUntil)) {
+    return false;
+  }
+
+  return new Date(`${pond.clientUntil}T23:59:59`).getTime() >= now.getTime();
+}
+
+export function sortPondsRecommended(items: Pond[], now = new Date()) {
+  return [...items].sort((a, b) => {
+    const aPriority = isPriorityPond(a, now);
+    const bPriority = isPriorityPond(b, now);
+
+    if (aPriority !== bPriority) {
+      return aPriority ? -1 : 1;
+    }
+
+    if (aPriority && bPriority && a.position !== b.position) {
+      return (a.position ?? Number.MAX_SAFE_INTEGER) - (b.position ?? Number.MAX_SAFE_INTEGER);
+    }
+
+    return a.distanceFromMkad - b.distanceFromMkad || a.name.localeCompare(b.name, "ru") || a.id.localeCompare(b.id);
+  });
+}
+
+export function getPublishedPonds() {
+  return ponds.filter((pond) => pond.status === "published");
+}
+
+export const fishOptions = Array.from(
+  new Set(getPublishedPonds().flatMap((pond) => pond.fish))
+).sort(
   (a, b) => a.localeCompare(b, "ru")
 );
 
 export function getPondBySlug(slug: string) {
-  return ponds.find((pond) => pond.slug === slug);
+  return getPublishedPonds().find((pond) => pond.slug === slug);
 }
 
 export function getFeaturedPonds() {
-  return ponds.filter((pond) => pond.isFeatured).slice(0, 6);
+  return sortPondsRecommended(getPublishedPonds().filter((pond) => pond.isFeatured)).slice(0, 6);
+}
+
+export function isRecentStocking(pond: Pond, now = new Date(), maxAgeDays = 60) {
+  if (!pond.lastStocking) {
+    return false;
+  }
+
+  const stockingTime = new Date(`${pond.lastStocking.date}T00:00:00`).getTime();
+  if (Number.isNaN(stockingTime) || stockingTime > now.getTime()) {
+    return false;
+  }
+
+  const ageInDays = (now.getTime() - stockingTime) / 86_400_000;
+  return ageInDays <= maxAgeDays;
 }
 
 export function getRecentStockings(limit = 6) {
-  return ponds
-    .filter((pond) => pond.lastStocking)
+  return getPublishedPonds()
+    .filter((pond) => isRecentStocking(pond))
     .sort(
       (a, b) =>
         new Date(b.lastStocking?.date ?? 0).getTime() -

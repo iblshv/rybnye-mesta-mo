@@ -12,6 +12,19 @@ export const metadata: Metadata = {
   },
   description:
     "Каталог платных водоёмов Московской области: цены, зарыбления, виды рыбы, условия ловли и подбор места для рыбалки.",
+  applicationName: "Fishno",
+  referrer: "origin-when-cross-origin",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1
+    }
+  },
   openGraph: {
     type: "website",
     locale: "ru_RU",
@@ -28,6 +41,13 @@ export const metadata: Metadata = {
         alt: "Платная рыбалка в Московской области"
       }
     ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Рыбные места Московской области - платная рыбалка в Подмосковье",
+    description:
+      "Каталог платных водоёмов Московской области: цены, зарыбления, виды рыбы и условия ловли.",
+    images: [absoluteUrl("/images/hero-fishing.png")]
   }
 };
 

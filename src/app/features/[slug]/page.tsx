@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PondCard } from "@/components/PondCard";
+import { StructuredData } from "@/components/StructuredData";
 import { buttonVariants } from "@/components/ui/button";
 import { featureSeoPages, getFeatureSeoPage } from "@/data/seo-pages";
-import { ponds } from "@/data/ponds";
-import { absoluteUrl } from "@/lib/site";
+import { getPublishedPonds, sortPondsRecommended } from "@/data/ponds";
+import { breadcrumbJsonLd, pondListJsonLd } from "@/lib/seo";
+import { canonicalUrl } from "@/lib/site";
 
 type FeaturePageProps = {
   params: {
@@ -37,7 +40,7 @@ export function generateMetadata({ params }: FeaturePageProps): Metadata {
       description: page.description
     },
     alternates: {
-      canonical: absoluteUrl(`/features/${page.slug}`)
+      canonical: canonicalUrl(`/features/${page.slug}`)
     }
   };
 }
@@ -49,10 +52,25 @@ export default function FeatureSeoPage({ params }: FeaturePageProps) {
     notFound();
   }
 
-  const matchingPonds = ponds.filter((pond) => pond.features[page.featureKey]);
+  const matchingPonds = sortPondsRecommended(
+    getPublishedPonds().filter((pond) => pond.features[page.featureKey])
+  );
+  const breadcrumbs = [
+    { name: "Главная", path: "/" },
+    { name: "Каталог водоёмов", path: "/ponds" },
+    { name: page.title, path: `/features/${page.slug}` }
+  ];
 
   return (
-    <section className="section-y">
+    <>
+      <StructuredData
+        data={[
+          breadcrumbJsonLd(breadcrumbs),
+          pondListJsonLd(page.title, `/features/${page.slug}`, matchingPonds)
+        ]}
+      />
+      <Breadcrumbs items={breadcrumbs} />
+      <section className="section-y pt-8">
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-pine-700">
@@ -78,6 +96,7 @@ export default function FeatureSeoPage({ params }: FeaturePageProps) {
           ))}
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }

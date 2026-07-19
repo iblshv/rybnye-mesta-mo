@@ -19,3 +19,12 @@ export function absoluteUrl(path = "") {
 
   return `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
 }
+
+export function canonicalUrl(path = "") {
+  if (!path || path === "/") {
+    return `${siteUrl}/`;
+  }
+
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${siteUrl}${normalizedPath.endsWith("/") ? normalizedPath : `${normalizedPath}/`}`;
+}

@@ -3,7 +3,7 @@ import { BadgeCheck, ChartNoAxesCombined, ClipboardList, Handshake, Sparkles } f
 import { LeadForm } from "@/components/LeadForm";
 import { Badge } from "@/components/Badge";
 import { Card } from "@/components/ui/card";
-import { absoluteUrl } from "@/lib/site";
+import { canonicalUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Разместите ваш платный водоём в каталоге",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
       "Покажите рыбакам актуальные цены, зарыбления, условия ловли и получайте заявки."
   },
   alternates: {
-    canonical: absoluteUrl("/for-owners")
+    canonical: canonicalUrl("/for-owners")
   }
 };
 
