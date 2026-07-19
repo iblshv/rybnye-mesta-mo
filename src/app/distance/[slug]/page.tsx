@@ -80,8 +80,8 @@ export default function DistanceSeoPage({ params }: DistancePageProps) {
           </div>
 
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {matchingPonds.map((pond) => (
-              <PondCard compact key={pond.id} pond={pond} />
+            {matchingPonds.map((pond, index) => (
+              <PondCard compact key={pond.id} pond={pond} priority={index === 0} />
             ))}
           </div>
         </div>

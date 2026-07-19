@@ -25,13 +25,13 @@ export function FaqSection() {
               className="group rounded-2xl border border-pine-900/10 bg-white p-5 shadow-sm transition open:shadow-soft"
               key={item.question}
             >
-              <summary className="flex cursor-pointer list-none items-start gap-3 text-lg font-bold text-pine-900 [&::-webkit-details-marker]:hidden">
+              <summary className="flex min-h-11 cursor-pointer list-none items-start gap-3 text-lg font-bold text-pine-900 [&::-webkit-details-marker]:hidden">
                 <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-pine-50 text-pine-700">
                   <HelpCircle className="h-4 w-4" aria-hidden="true" />
                 </span>
                 <span>{item.question}</span>
               </summary>
-              <p className="mt-4 pl-11 text-sm leading-6 text-slate-600">
+              <p className="mt-4 pl-11 text-base leading-7 text-slate-600 max-sm:pl-0">
                 {item.answer}
               </p>
             </details>

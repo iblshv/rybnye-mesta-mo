@@ -9,17 +9,17 @@ type BreadcrumbsProps = {
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
     <nav aria-label="Хлебные крошки" className="container-page pt-5">
-      <ol className="flex flex-wrap items-center gap-1 text-sm text-slate-500">
+      <ol className="flex min-w-0 flex-wrap items-center gap-x-1 gap-y-2 text-sm leading-5 text-slate-600">
         {items.map((item, index) => {
           const isCurrent = index === items.length - 1;
 
           return (
-            <li className="flex items-center gap-1" key={item.path}>
+            <li className="flex min-w-0 items-center gap-1" key={item.path}>
               {index > 0 ? (
                 <ChevronRight className="h-4 w-4" aria-hidden="true" />
               ) : null}
               {isCurrent ? (
-                <span aria-current="page" className="font-semibold text-slate-700">
+                <span aria-current="page" className="break-words font-semibold text-slate-700">
                   {item.name}
                 </span>
               ) : (

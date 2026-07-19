@@ -121,18 +121,20 @@ export default function PondPage({ params }: PondPageProps) {
               unoptimized={image.endsWith(".svg")}
             />
           </div>
-          <div>
+          <div className="min-w-0">
             <Badge tone={pond.isFeatured ? "sand" : "blue"}>
               {pond.isFeatured ? "Популярное место" : "Проверяется"}
             </Badge>
-            <h1 className="mt-4 text-4xl font-bold leading-tight text-pine-900 sm:text-5xl">
+            <h1 className="mt-4 break-words text-4xl font-bold leading-tight text-pine-900 sm:text-5xl">
               {pond.name}
             </h1>
             <p className="mt-4 text-lg leading-8 text-slate-600">{pond.description}</p>
             <div className="mt-5 grid gap-3 text-sm font-semibold text-slate-700 sm:grid-cols-2">
-              <span className="flex items-center gap-2 rounded-xl bg-pine-50 px-4 py-3">
-                <MapPin className="h-5 w-5 text-pine-700" aria-hidden="true" />
-                {pond.district}, {pond.distanceFromMkad} км от МКАД
+              <span className="flex min-w-0 items-start gap-2 rounded-xl bg-pine-50 px-4 py-3">
+                <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-pine-700" aria-hidden="true" />
+                <span className="min-w-0 break-words">
+                  {pond.district}, {pond.distanceFromMkad} км от МКАД
+                </span>
               </span>
               <span className="flex items-center gap-2 rounded-xl bg-sand-100 px-4 py-3">
                 <WalletCards className="h-5 w-5 text-pine-700" aria-hidden="true" />
@@ -166,7 +168,7 @@ export default function PondPage({ params }: PondPageProps) {
       <section className="section-y">
         <div className="container-page grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
           <div className="grid gap-6">
-            <Card className="p-6">
+            <Card className="p-5 sm:p-6">
               <h2 className="text-2xl font-bold text-pine-900">Основная информация</h2>
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 <InfoItem label="Адрес" value={pond.address} />
@@ -180,7 +182,7 @@ export default function PondPage({ params }: PondPageProps) {
                       Страница водоёма
                     </div>
                     <a
-                      className="mt-1 inline-flex items-center gap-2 font-semibold text-pine-700 hover:text-pine-900"
+                      className="mt-1 inline-flex min-h-11 max-w-full items-center gap-2 break-words font-semibold text-pine-700 hover:text-pine-900"
                       href={pond.websiteUrl}
                       rel="noreferrer"
                       target="_blank"
@@ -195,7 +197,7 @@ export default function PondPage({ params }: PondPageProps) {
                     Карта
                   </div>
                   <a
-                    className="mt-1 inline-flex items-center gap-2 font-semibold text-pine-700 hover:text-pine-900"
+                    className="mt-1 inline-flex min-h-11 max-w-full items-center gap-2 break-words font-semibold text-pine-700 hover:text-pine-900"
                     href={pond.mapUrl}
                     rel="noreferrer"
                     target="_blank"
@@ -218,7 +220,7 @@ export default function PondPage({ params }: PondPageProps) {
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-5 sm:p-6">
               <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-pine-900">На карте</h2>
@@ -227,7 +229,7 @@ export default function PondPage({ params }: PondPageProps) {
                   </p>
                 </div>
                 <a
-                  className="inline-flex items-center gap-2 text-sm font-bold text-pine-700 hover:text-pine-900"
+                  className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-pine-700 hover:text-pine-900"
                   href={pond.mapUrl}
                   rel="noreferrer"
                   target="_blank"
@@ -252,7 +254,7 @@ export default function PondPage({ params }: PondPageProps) {
               />
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-5 sm:p-6">
               <h2 className="text-2xl font-bold text-pine-900">Какая рыба есть</h2>
               <div className="mt-4 flex flex-wrap gap-2">
                 {pond.fish.map((fish) => (
@@ -263,7 +265,7 @@ export default function PondPage({ params }: PondPageProps) {
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-5 sm:p-6">
               <h2 className="text-2xl font-bold text-pine-900">Последнее зарыбление</h2>
               {pond.lastStocking ? (
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -289,7 +291,7 @@ export default function PondPage({ params }: PondPageProps) {
               )}
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-5 sm:p-6">
               <h2 className="text-2xl font-bold text-pine-900">Условия и правила</h2>
               <ul className="mt-4 grid gap-3">
                 {pond.rules.map((rule) => (
@@ -301,27 +303,27 @@ export default function PondPage({ params }: PondPageProps) {
               </ul>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-5 sm:p-6">
               <h2 className="text-2xl font-bold text-pine-900">Услуги</h2>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 {pond.services.map((service) => {
                   const Icon = serviceIconMap[service] ?? ShieldCheck;
                   return (
                     <div
-                      className="flex items-center gap-3 rounded-2xl bg-pine-50 p-4 font-semibold text-pine-900"
+                      className="flex min-w-0 items-center gap-3 rounded-2xl bg-pine-50 p-4 font-semibold text-pine-900"
                       key={service}
                     >
-                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-pine-700">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-pine-700">
                         <Icon className="h-5 w-5" aria-hidden="true" />
                       </span>
-                      {service}
+                      <span className="min-w-0 break-words">{service}</span>
                     </div>
                   );
                 })}
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-5 sm:p-6">
               <h2 className="text-2xl font-bold text-pine-900">Что взять с собой</h2>
               <ul className="mt-4 grid gap-3">
                 {pond.whatToBring.map((item) => (
@@ -347,7 +349,7 @@ export default function PondPage({ params }: PondPageProps) {
             ) : null}
           </div>
 
-          <aside className="rounded-2xl border border-pine-900/10 bg-white p-6 shadow-soft lg:sticky lg:top-24">
+          <aside className="rounded-2xl border border-pine-900/10 bg-white p-5 shadow-soft sm:p-6 lg:sticky lg:top-24">
             <h2 className="text-2xl font-bold text-pine-900">Контакты водоёма</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">
               Свяжитесь с администрацией напрямую и уточните цены, график и условия
@@ -391,7 +393,8 @@ export default function PondPage({ params }: PondPageProps) {
         </div>
       </section>
 
-      <div className="fixed bottom-3 left-4 right-4 z-40 md:hidden">
+      <div className="h-20 md:hidden" aria-hidden="true" />
+      <div className="mobile-contact-bar safe-bottom fixed bottom-0 left-0 right-0 z-40 border-t border-pine-900/10 bg-white/92 px-4 pt-3 backdrop-blur-xl md:hidden">
         <a
           className={buttonVariants({
             size: "lg",
@@ -409,11 +412,11 @@ export default function PondPage({ params }: PondPageProps) {
 
 function InfoItem({ label, value }: { label: string; value: string }) {
   return (
-    <div>
+    <div className="min-w-0">
       <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
         {label}
       </div>
-      <div className="mt-1 font-semibold leading-6 text-pine-900">{value}</div>
+      <div className="mt-1 break-words font-semibold leading-6 text-pine-900">{value}</div>
     </div>
   );
 }
@@ -433,7 +436,7 @@ function InfoPill({
         {Icon ? <Icon className="h-4 w-4" aria-hidden="true" /> : null}
         {label}
       </div>
-      <div className="mt-2 font-bold text-pine-900">{value}</div>
+      <div className="mt-2 break-words font-bold text-pine-900">{value}</div>
     </div>
   );
 }
