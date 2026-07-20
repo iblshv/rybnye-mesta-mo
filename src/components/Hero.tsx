@@ -9,17 +9,17 @@ export function Hero() {
     <section className="relative min-h-[calc(82vh-64px)] overflow-hidden bg-pine-900 text-white">
       <Image
         alt="Тихий платный водоём для рыбалки в Московской области"
-        className="object-cover"
+        className="object-cover object-[65%_center] lg:object-center"
         fill
         priority
         sizes="100vw"
-        src={withBasePath("/images/hero-fishing.png")}
+        src={withBasePath("/images/hero-fishing-gazebo.png")}
       />
       <div className="absolute inset-0 bg-pine-900/25" />
       <div className="absolute inset-0 bg-gradient-to-t from-pine-900/50 via-transparent to-transparent" />
 
       <div className="container-page relative flex min-h-[calc(82vh-64px)] items-end py-8 sm:items-center sm:py-16">
-        <div className="max-w-3xl rounded-3xl border border-white/15 bg-pine-900/85 p-6 shadow-lift backdrop-blur-md sm:p-8 lg:p-10">
+        <div className="max-w-3xl rounded-3xl border border-white/15 bg-pine-900/45 p-6 shadow-lift backdrop-blur-md sm:p-8 lg:p-10">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/20 backdrop-blur">
             <Waves className="h-4 w-4" aria-hidden="true" />
             Каталог платной рыбалки в Подмосковье

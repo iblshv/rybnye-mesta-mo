@@ -35,7 +35,7 @@ export const metadata: Metadata = {
       "Каталог платных водоёмов Московской области: цены, зарыбления, виды рыбы, условия ловли и подбор места для рыбалки.",
     images: [
       {
-        url: absoluteUrl("/images/hero-fishing.png"),
+        url: absoluteUrl("/images/hero-fishing-gazebo.png"),
         width: 1200,
         height: 800,
         alt: "Платная рыбалка в Московской области"
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     title: "Рыбные места Московской области - платная рыбалка в Подмосковье",
     description:
       "Каталог платных водоёмов Московской области: цены, зарыбления, виды рыбы и условия ловли.",
-    images: [absoluteUrl("/images/hero-fishing.png")]
+    images: [absoluteUrl("/images/hero-fishing-gazebo.png")]
   }
 };
 
