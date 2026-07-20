@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Filter, Fish, MapPin, WalletCards } from "lucide-react";
+import { ArrowRight, Filter, Fish, Info, MapPin, WalletCards } from "lucide-react";
 import { Badge } from "@/components/Badge";
 import { FaqSection } from "@/components/FaqSection";
 import { Hero } from "@/components/Hero";
@@ -177,6 +177,13 @@ export default function HomePage() {
               Смотрите, куда недавно запускали рыбу, и выбирайте водоём под текущую
               активность.
             </p>
+            <div className="mt-5 flex max-w-xl items-start gap-3 rounded-2xl border border-pine-900/10 bg-white/70 p-4 text-sm leading-6 text-slate-600">
+              <Info className="mt-0.5 h-5 w-5 shrink-0 text-pine-700" aria-hidden="true" />
+              <p>
+                Информация обновляется автоматически и может содержать неточности.
+                Точные сведения уточняйте у рыболовных клубов.
+              </p>
+            </div>
           </div>
           <StockingList ponds={recentStockings} />
         </div>

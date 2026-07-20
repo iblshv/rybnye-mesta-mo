@@ -8,8 +8,6 @@ import { buttonVariants } from "./ui/button";
 const navItems = [
   { href: "/", label: "Главная" },
   { href: "/ponds", label: "Каталог" },
-  { href: "/fish/forel", label: "Форель" },
-  { href: "/fish/karp", label: "Карп" },
   { href: "/for-owners", label: "Для владельцев" }
 ];
 
