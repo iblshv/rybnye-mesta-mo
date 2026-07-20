@@ -29,6 +29,8 @@ export type Pond = {
     fish: string;
     amount: string;
     comment?: string;
+    sourceUrl?: string;
+    verifiedAt?: string;
   };
   rules: string[];
   whatToBring: string[];
@@ -169,10 +171,12 @@ export const ponds: Pond[] = [
       houses: true
     },
     lastStocking: {
-      date: "2025-10-07",
-      fish: "форель",
-      amount: "запуск по новости",
-      comment: "В найденных новостях также упоминались запуски налима и щуки."
+      date: "2026-07-15",
+      fish: "карп",
+      amount: "количество не указано",
+      comment: "Подтверждено по официальной публикации «Запуск крупной партии карпа для поплавка и донки».",
+      sourceUrl: "https://goldsazan.ru/news/zapusk-krupnoy-partii-karpa-dlya-poplavka-i-donki/",
+      verifiedAt: "2026-07-20"
     },
     rules: [
       "Рыбалка по путёвкам, бронирование желательно заранее.",
@@ -243,11 +247,12 @@ export const ponds: Pond[] = [
       houses: true
     },
     lastStocking: {
-      date: "2026-06-07",
-      fish: "осётр",
-      amount: "до 20 кг",
-      comment:
-        "Найдено официальное сообщение за 1-7 июня 2026 о зарыблении осетром до 20 кг."
+      date: "2026-07-01",
+      fish: "карп",
+      amount: "количество не указано, навеска 1,5 кг",
+      comment: "Подтверждено по официальной публикации «Рыболовный отчёт 29.06-05.07.2026: зарыбление карпом, уловы и отдых в Ихтиологе | Загородный клуб Ихтиолог».",
+      sourceUrl: "https://club-ihtiolog.ru/o-klube/novosti/rybolovnyy-otchyet-za-nedelyu-zaryblenie-karpom-ulovy-i-otdykh-v-ikhtiologe/",
+      verifiedAt: "2026-07-20"
     },
     rules: [
       "Мужчины от 12 лет покупают путёвку.",

@@ -1,0 +1,50 @@
+name: Deploy fishno.ru
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fishno-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip fishno deploy]')
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      FISHNO_SSH_PORT: ${{ secrets.FISHNO_SSH_PORT }}
+      FISHNO_SSH_PRIVATE_KEY: ${{ secrets.FISHNO_SSH_PRIVATE_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build production site
+        env:
+          NEXT_PUBLIC_BASE_PATH: ""
+          NEXT_PUBLIC_SITE_URL: https://fishno.ru
+          NEXT_PUBLIC_YANDEX_MAPS_API_KEY: ${{ secrets.NEXT_PUBLIC_YANDEX_MAPS_API_KEY }}
+        run: pnpm build
+
+      - name: Deploy to fishno.ru
+        shell: bash
+        run: bash scripts/deploy-fishno.sh

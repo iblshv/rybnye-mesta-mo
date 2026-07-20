@@ -1,0 +1,67 @@
+name: Update verified stockings
+
+on:
+  schedule:
+    # 01:00 Europe/Moscow (UTC+3), every day.
+    - cron: "0 22 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-stockings
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check official stocking sources
+        id: stockings
+        run: pnpm update:stockings
+
+      - name: Build production site
+        if: steps.stockings.outputs.changed == 'true'
+        env:
+          NEXT_PUBLIC_BASE_PATH: ""
+          NEXT_PUBLIC_SITE_URL: https://fishno.ru
+          NEXT_PUBLIC_YANDEX_MAPS_API_KEY: ${{ secrets.NEXT_PUBLIC_YANDEX_MAPS_API_KEY }}
+        run: pnpm build
+
+      - name: Deploy to fishno.ru
+        if: steps.stockings.outputs.changed == 'true'
+        shell: bash
+        env:
+          FISHNO_SSH_PORT: ${{ secrets.FISHNO_SSH_PORT }}
+          FISHNO_SSH_PRIVATE_KEY: ${{ secrets.FISHNO_SSH_PRIVATE_KEY }}
+        run: bash scripts/deploy-fishno.sh
+
+      - name: Commit verified changes after production deploy
+        if: steps.stockings.outputs.changed == 'true'
+        run: |
+          git config user.name "fishno-bot"
+          git config user.email "fishno-bot@users.noreply.github.com"
+          git add src/data/ponds.ts
+          git commit -m "Update verified stockings [skip fishno deploy]"
+          git push origin main
